@@ -1,4 +1,129 @@
 //var paneArray=["pane"]
+var imageMap= {
+					"adventure0": {latitude:9.32878, longitude:76.377716}, //wonderla
+					"adventure1": {latitude:12.771837, longitude:77.484771}, //dirt mania adventure
+					"adventure2": {latitude:12.77012, longitude: 77.56777}, //banerghatta national park
+					"adventure3": {latitude:17.423947, longitude: 78.510353}, //skandagiri trek 
+					"adventure4": {latitude:12.217127, longitude:75.608806}, //Tadiyandamol
+					"food0": {latitude:12.908168, longitude:77.55936}, //park plaza
+					"food1": {latitude:12.994604, longitude:77.625725}, //ITC gardenia
+					"food2": {latitude:13.032298, longitude:77.580517}, //IBIS
+					"food3": {latitude:13.228754, longitude:77.689801}, //Keys
+					"food4": {latitude:12.988445, longitude:77.547861}, //AB's
+					"history0": {latitude:28.705128, longitude:77.176914}, //lal bagh
+					"history1": {latitude:12.975536, longitude:77.591}, //cubbon park
+					"history2": {latitude:12.998678, longitude:77.592221}, //bangalore palace
+					"history3": {latitude:12.967933, longitude: 77.593043}, //bangalore fort
+					"history4": {latitude:13.248961, longitude:77.709795}, //devanhalli fort
+					"history5": {latitude:43.8789 , longitude: 103.4598},
+					"music0": {latitude:13.016229, longitude:77.565971}, // Chowdiah Memorial Hall
+					"music1": {latitude:12.978239 , longitude:77.644388}, // Goethe-Institute Max Mueller Bhavan
+					"music2": {latitude:12.971599, longitude:77.594563}, // WXYZ Bar - Aloft 
+					"music3": {latitude:12.991428, longitude:77.596921}, //Alliance Francaise de Bangalore
+					"music4": {latitude:12.971599, longitude:77.594563} //Ruh - The Soul of the Desert
+		};
+var categoryCountMap=localStorage.getItem("categoryCount") !== null?JSON.parse(localStorage.getItem("categoryCount")):{};
+var likedIds=[];
+var likedTitles=[];
+var categoryIds=[];
+var categoryTitles=[];
+var imagesArr=[];
+var sortedMapObject={};
+var imagesArr = [{"id":"adventure0","category":"adventure","event":"","like":"0","title":"Wonderla"},
+                 {"id":"food0","category":"food","event":"","like":"0","title":"Park Plaza"},
+                 //{"id":"religion0","category":"religion","event":"","like":"0"},
+                 {"id":"music0","category":"music","event":"","like":"0","title":"Chowdiah Memorial Hall"},
+                 //{"id":"sports0","category":"sports","event":"","like":"0"},
+                 {"id":"adventure1","category":"adventure","event":"","like":"0","title":"Dirt Mania Adventure"},
+                 {"id":"food1","category":"food","event":"","like":"0","title":"ITC Gardenia"},
+                 //{"id":"religion1","category":"religion","event":"","like":"0"},
+                 {"id":"music1","category":"music","event":"","like":"0","title":"Goethe-Institute Max Mueller"},
+                 //{"id":"sports1","category":"sports","event":"","like":"0"},
+                 {"id":"adventure2","category":"adventure","event":"","like":"0","title":"Banerghatta National Park"},
+                 {"id":"food2","category":"food","event":"","like":"0","title":"IBIS"},
+                 //{"id":"religion2","category":"religion","event":"","like":"0"},
+                 {"id":"music2","category":"music","event":"","like":"0","title":"WXYZ Bar - Aloft"},
+                 //{"id":"sports2","category":"sports","event":"","like":"0"},
+                 {"id":"adventure3","category":"adventure","event":"","like":"0","title":"Skandagiri Trek"},
+                 {"id":"food3","category":"food","event":"","like":"0","title":"Keys"},
+                 //{"id":"religion3","category":"religion","event":"","like":"0"},
+                 {"id":"music3","category":"music","event":"","like":"0","title":"Alliance Francaise de Bangalore"},
+                 //{"id":"sports3","category":"sports","event":"","like":"0"},
+                 {"id":"adventure4","category":"adventure","event":"","like":"0","title":"Tadiyandamol"},
+                 {"id":"food4","category":"food","event":"","like":"0","title":"AB's"},
+                 //{"id":"religion4","category":"religion","event":"","like":"0"},
+                 {"id":"music4","category":"music","event":"","like":"0","title":"Ruh - The Soul of the Desert"},
+                 //{"id":"sports4","category":"sports","event":"","like":"0"}
+                 ];
+var currentImage= imagesArr.length-1;
+					
+function initialiseApp(){
+            	$("#map-canvas").hide();
+				$("#likesPage").hide();
+				$("#description-page").hide();
+				
+				loadInitialImages();
+				var loadedImageId=$("#events_list li").last().attr("id");
+				$("#back-cover").css("background","url('../www/images/main/"+loadedImageId.substring(0,loadedImageId.length-1)+"/"+loadedImageId.substring(loadedImageId.length,loadedImageId.length-1)+".jpg')  no-repeat 0px 0px");
+				$("#back-cover").css("background-size","cover");
+				$("#back-cover").css("filter","blur(5px)");
+				$("#back-cover").css("-webkit-filter","blur(5px)");
+				
+				
+				
+				$("#sliderContainer").vTiwari({
+				// dislike callback
+				onDislike: function (item) {
+					// Perform some logic
+					categoryCount(item.attr("id"),false);
+				if(currentImage!=0){
+						var loadedImageId=imagesArr[--currentImage].id;
+						$("#back-cover").css("background","url('../www/images/main/"+loadedImageId.substring(0,loadedImageId.length-1)+"/"+loadedImageId.substring(loadedImageId.length,loadedImageId.length-1)+".jpg')  no-repeat 0px 0px");
+									$("#back-cover").css("background-size","cover");
+				}
+				   if(item.hasClass("lastItem")){
+						putInDatabase(categoryCountMap);
+						pageNavigation();
+				   }
+				},
+				// like callback
+				onLike: function (item) {
+					// Perform some logic
+					likedIds.push(item.attr("id"));	
+					likedTitles.push($("#"+item.attr("id")+" font").html());	
+				categoryCount(item.attr("id"),true);
+				if(currentImage!=0){
+						var loadedImageId=imagesArr[--currentImage].id;
+						$("#back-cover").css("background","url('../www/images/main/"+loadedImageId.substring(0,loadedImageId.length-1)+"/"+loadedImageId.substring(loadedImageId.length,loadedImageId.length-1)+".jpg')  no-repeat 0px 0px");
+									$("#back-cover").css("background-size","cover");
+				}
+				
+					/*
+					for(var i=imagesArr.length-1,j=i-1;i>=0 && j>=0;i--,j--){
+						if(imagesArr[i].id==item.attr("id")){
+							imagesArr[i].like="1";
+							var category =  item.attr("id").substring(0,item.attr("id").length-1);
+							if(imagesArr[j].category!=category){
+								orderArray(j,imagesArr,category);
+							}
+						}
+					}*/		
+					if(item.hasClass("lastItem")){
+						putInDatabase(categoryCountMap);
+						pageNavigation();
+					}		
+				},
+				animationRevertSpeed: 200,
+				animationSpeed: 400,
+				threshold: 1,
+				likeSelector: '.like',
+				dislikeSelector: '.dislike'
+			});
+	
+}
+
+
+
 /**
  * Set button action to trigger vTiwari like & dislike.
  */
@@ -8,7 +133,7 @@ $('.actions .like, .actions .dislike').click(function(e){
 });
 
 
-(function(){
+/*(function(){
 	$("#map-canvas").hide();
 	$("#likesPage").hide();
 	$("#description-page").hide();
@@ -20,7 +145,7 @@ $('.actions .like, .actions .dislike').click(function(e){
 			  $("#back-cover").css("filter","blur(5px)");
 			  $("#back-cover").css("-webkit-filter","blur(5px)");
 })();
-
+*/
 function shuffleArray(img,index,categ,prev){
 	for(var i=index+1;i<img.length;i++){
 		if(img[i].category==categ){
@@ -86,54 +211,7 @@ function orderArray(index,arr,category)
 }
 
 
-$("#sliderContainer").vTiwari({
-	// dislike callback
-    onDislike: function (item) {
-	    // Perform some logic
-		categoryCount(item.attr("id"),false);
-	if(currentImage!=0){
-			var loadedImageId=imagesArr[--currentImage].id;
-			$("#back-cover").css("background","url('../www/images/main/"+loadedImageId.substring(0,loadedImageId.length-1)+"/"+loadedImageId.substring(loadedImageId.length,loadedImageId.length-1)+".jpg')  no-repeat 0px 0px");
-						$("#back-cover").css("background-size","cover");
-	}
-	   if(item.hasClass("lastItem")){
-			putInDatabase(categoryCountMap);
-			pageNavigation();
-	   }
-    },
-	// like callback
-    onLike: function (item) {
-	    // Perform some logic
-        likedIds.push(item.attr("id"));	
-		likedTitles.push($("#"+item.attr("id")+" font").html());	
-	categoryCount(item.attr("id"),true);
-	if(currentImage!=0){
-			var loadedImageId=imagesArr[--currentImage].id;
-			$("#back-cover").css("background","url('../www/images/main/"+loadedImageId.substring(0,loadedImageId.length-1)+"/"+loadedImageId.substring(loadedImageId.length,loadedImageId.length-1)+".jpg')  no-repeat 0px 0px");
-						$("#back-cover").css("background-size","cover");
-	}
-	
-		/*
-		for(var i=imagesArr.length-1,j=i-1;i>=0 && j>=0;i--,j--){
-			if(imagesArr[i].id==item.attr("id")){
-				imagesArr[i].like="1";
-				var category =  item.attr("id").substring(0,item.attr("id").length-1);
-				if(imagesArr[j].category!=category){
-					orderArray(j,imagesArr,category);
-				}
-			}
-		}*/		
-		if(item.hasClass("lastItem")){
-			putInDatabase(categoryCountMap);
-			pageNavigation();
-		}		
-    },
-	animationRevertSpeed: 200,
-	animationSpeed: 400,
-	threshold: 1,
-	likeSelector: '.like',
-	dislikeSelector: '.dislike'
-});
+
 
 function pageNavigation(){
 	$("#page1").hide();
