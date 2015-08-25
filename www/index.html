@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html>
+    <head>
+	<style type="text/css">
+	html { height: 100% }
+	body { height: 100%; margin: 0; padding: 0 }
+	#map-canvas { height: 100% }
+	</style>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+            
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                <title>Tinder for Travel</title>
+				<!-- for like page start-->
+				<link rel="stylesheet" href="css/jquery.mobile-1.4.1.min.css">
+				<link rel="stylesheet" href="css/listview-grid.css">
+                <!-- for like page end-->
+                <!--for description-->
+                <link href="css/bootstrap.css" rel='stylesheet' type='text/css' />
+                <link href="css/style.css" rel="stylesheet" type="text/css" media="all" />
+                <link href='http://fonts.googleapis.com/css?family=Source+Sans+Pro:200,300,400,600,700,900' rel='stylesheet' type='text/css'>
+                    <link href='http://fonts.googleapis.com/css?family=Raleway:400,800,300,100,500,700,600,900' rel='stylesheet' type='text/css'>
+                    <link href="css/animate.css" rel="stylesheet" type="text/css" media="all">
+                    <script src="js/wow.min.js"></script>
+                    <script>
+                    new WOW().init();
+                    </script>
+                    <!--/animated-css-->
+                    <!--for desc end-->
+				<link rel="stylesheet" type="text/css" href="css/vTiwari.css">
+				<script type="text/javascript" src="cordova.js"></script>
+				
+				<script type="text/javascript" src="js/jquery-1.11.3.min.js"></script>
+				<script type="text/javascript" src="js/jquery.bpopup.min.js"></script>
+				<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCTha7xxiha3w4O7RpA0aJpA0CrKsmkocw" type="text/javascript"></script>
+				<!-- bxSlider Javascript file -->
+				<!--<script src="jquery.bxslider.min.js"></script>-->
+				<script src="js/places.js"></script>
+				<!-- bxSlider CSS file -->
+				<!--<link href="jquery.bxslider.css" rel="stylesheet" />-->
+				
+				<style type="text/css">
+
+				.bx-viewport{
+					/*height:16em !important;*/
+				}
+				.bx-wrapper{
+					position: absolute !important;
+					margin: 0px auto !important;
+					left:0;
+					right:0;
+					bottom:13%;
+				}
+				.bxslider{
+					margin:0;
+				}
+				.bx-wrapper .bx-viewport{
+					box-shadow:0;
+					border:0;
+					left:0;
+				}
+				.slider-image{
+					margin-left:auto;
+					margin-right:auto;
+					width:200px;
+					height:120px;
+				}
+				
+				
+				#element_to_pop_up { 
+					background-color:#fff;
+					border-radius:15px;
+					color:#000;
+					display:none; 
+					padding:20px;
+					min-width:350px;
+					min-height: 180px;
+					/*width:auto !important;
+					height:auto !important;*/
+				}
+				#element_to_pop_up .content{
+					max-width:100%;
+				}
+				
+				/*#element_to_pop_up .content img{ 
+					width:100%;
+					height:100%;
+				}*/
+				.b-close{
+					cursor:pointer;
+					position:absolute;
+					right:10px;
+					top:5px;
+				}
+				
+				.content{
+					overflow:hidden;
+				}
+				
+				.content img{
+					width:100%;
+					height:100%;
+				}
+				</style>
+				<script>
+				
+				var imageMap= {
+					"adventure0": {latitude:9.32878, longitude:76.377716}, //wonderla
+					"adventure1": {latitude:12.771837, longitude:77.484771}, //dirt mania adventure
+					"adventure2": {latitude:12.77012, longitude: 77.56777}, //banerghatta national park
+					"adventure3": {latitude:17.423947, longitude: 78.510353}, //skandagiri trek 
+					"adventure4": {latitude:12.217127, longitude:75.608806}, //Tadiyandamol
+					"food0": {latitude:12.908168, longitude:77.55936}, //park plaza
+					"food1": {latitude:12.994604, longitude:77.625725}, //ITC gardenia
+					"food2": {latitude:13.032298, longitude:77.580517}, //IBIS
+					"food3": {latitude:13.228754, longitude:77.689801}, //Keys
+					"food4": {latitude:12.988445, longitude:77.547861}, //AB's
+					"history0": {latitude:28.705128, longitude:77.176914}, //lal bagh
+					"history1": {latitude:12.975536, longitude:77.591}, //cubbon park
+					"history2": {latitude:12.998678, longitude:77.592221}, //bangalore palace
+					"history3": {latitude:12.967933, longitude: 77.593043}, //bangalore fort
+					"history4": {latitude:13.248961, longitude:77.709795}, //devanhalli fort
+					"history5": {latitude:43.8789 , longitude: 103.4598},
+					"music0": {latitude:13.016229, longitude:77.565971}, // Chowdiah Memorial Hall
+					"music1": {latitude:12.978239 , longitude:77.644388}, // Goethe-Institute Max Mueller Bhavan
+					"music2": {latitude:12.971599, longitude:77.594563}, // WXYZ Bar - Aloft 
+					"music3": {latitude:12.991428, longitude:77.596921}, //Alliance Francaise de Bangalore
+					"music4": {latitude:12.971599, longitude:77.594563} //Ruh - The Soul of the Desert
+				};
+				var categoryCountMap=localStorage.getItem("categoryCount") !== null?JSON.parse(localStorage.getItem("categoryCount")):{};
+				var likedIds=[];
+				var likedTitles=[];
+				var categoryIds=[];
+				var categoryTitles=[];
+				var imagesArr=[];
+				var sortedMapObject={};
+				
+				var imagesArr = [{"id":"adventure0","category":"adventure","event":"","like":"0","title":"Wonderla"},
+                                {"id":"food0","category":"food","event":"","like":"0","title":"Park Plaza"},
+                                //{"id":"religion0","category":"religion","event":"","like":"0"},
+                                {"id":"music0","category":"music","event":"","like":"0","title":"Chowdiah Memorial Hall"},
+                                //{"id":"sports0","category":"sports","event":"","like":"0"},
+                                {"id":"adventure1","category":"adventure","event":"","like":"0","title":"Dirt Mania Adventure"},
+                                {"id":"food1","category":"food","event":"","like":"0","title":"ITC Gardenia"},
+                                //{"id":"religion1","category":"religion","event":"","like":"0"},
+                                {"id":"music1","category":"music","event":"","like":"0","title":"Goethe-Institute Max Mueller"},
+                                //{"id":"sports1","category":"sports","event":"","like":"0"},
+                                 {"id":"adventure2","category":"adventure","event":"","like":"0","title":"Banerghatta National Park"},
+                                {"id":"food2","category":"food","event":"","like":"0","title":"IBIS"},
+                                //{"id":"religion2","category":"religion","event":"","like":"0"},
+                                {"id":"music2","category":"music","event":"","like":"0","title":"WXYZ Bar - Aloft"},
+                                //{"id":"sports2","category":"sports","event":"","like":"0"},
+                                {"id":"adventure3","category":"adventure","event":"","like":"0","title":"Skandagiri Trek"},
+                                {"id":"food3","category":"food","event":"","like":"0","title":"Keys"},
+                                //{"id":"religion3","category":"religion","event":"","like":"0"},
+                                {"id":"music3","category":"music","event":"","like":"0","title":"Alliance Francaise de Bangalore"},
+                                //{"id":"sports3","category":"sports","event":"","like":"0"},
+                                {"id":"adventure4","category":"adventure","event":"","like":"0","title":"Tadiyandamol"},
+                                {"id":"food4","category":"food","event":"","like":"0","title":"AB's"},
+                                //{"id":"religion4","category":"religion","event":"","like":"0"},
+                                {"id":"music4","category":"music","event":"","like":"0","title":"Ruh - The Soul of the Desert"},
+                                //{"id":"sports4","category":"sports","event":"","like":"0"}
+                        ];
+					var currentImage= imagesArr.length-1;
+				
+				</script>
+    </head>
+    <body>
+		<div  data-role="page" id="page1" style="height:100%;">
+			<div id="back-cover" style="position:relative;width:100%;height:100%;min-height:720px;"></div>
+			<div id="mainBody" class="wrap">
+				<div id="sliderContainer">
+				  <ul id="events_list" >
+										 
+					</ul>
+				</div>   
+			</div>
+		</div>
+		
+		
+    <!-- jTinder trigger by buttons  -->
+   
+        
+		<!--<div id="geolocation" style="display:block;height:40%"></div>-->
+		<div data-role="page" id="map-canvas" style="display:block;"></div> 
+
+		<!--<ul class="bxslider" style="display:block;margin-bottom:0.1%;">
+		  <li><img class="slider-image" src="images/Chicago.jpg" /></li>
+		  <li><img class="slider-image" src="images/las_vegas.jpg" /></li>
+			<li><img class="slider-image" src="images/Miami.jpg" /></li>
+		  <li><img class="slider-image" src="images/NewYork.jpg" /></li>
+		   <li><img class="slider-image" src="images/San_Francisco.jpg" /></li>
+		</ul>-->
+		
+		
+		
+		<!-- Element to pop up -->
+         <!-- Element to pop up -->
+			<div id="element_to_pop_up">
+				<a class="b-close">x<a/>
+				<div class="content" style="max-width:320px;max-height:400px;"></div>
+			</div>
+		
+		<!--<script type="text/javascript" src="js/jquery.min.js"></script>-->
+		
+		
+		<div  data-role="page" id="likesPage">
+
+			<div data-role="page" data-theme="b" id="demo-page" class="my-page  ui-page-theme-b ui-page-active" data-url="demo-page" tabindex="0" style="min-height: 935px;">
+
+				<div data-role="header" role="banner" class="ui-header ui-bar-inherit">
+					<h1 class="ui-title" role="heading" aria-level="1">Liked Items</h1>
+					
+				</div>
+
+				<div role="main" class="ui-content">
+                    
+					<ul data-role="listview" data-inset="true" class="ui-listview ui-listview-inset ui-corner-all ui-shadow">
+						<li data-item="music" class="ui-li-has-thumb ui-first-child"><a href="javascript:openMap('music');" class="ui-btn ui-btn-icon-right ui-icon-carat-r">
+							<img src="images/main/music/0.jpg" class="ui-li-thumb">
+							<h2>Music</h2>
+							<p class="numLikes">Likes 2</p>
+							<p class="ui-li-aside">music</p>
+						</a></li>
+						<li data-item="adventure" class="ui-li-has-thumb"><a href="javascript:openMap('adventure');" class="ui-btn ui-btn-icon-right ui-icon-carat-r">
+							<img src="images/main/adventure/0.jpg" class="ui-li-thumb">
+							<h2>Adventure</h2>
+							<p class="numLikes">Likes 4</p>
+							<p class="ui-li-aside">adventure</p>
+						</a></li>
+						<li data-item="history" class="ui-li-has-thumb"><a href="javascript:openMap('history');" class="ui-btn ui-btn-icon-right ui-icon-carat-r">
+							<img src="images/main/history/0.jpg".jpg" class="ui-li-thumb">
+							<h2>History</h2>
+							<p class="numLikes">Likes 7</p>
+							<p class="ui-li-aside">history</p>
+						</a></li>
+						<li data-item="food" class="ui-li-has-thumb"><a href="javascript:openMap('food');" class="ui-btn ui-btn-icon-right ui-icon-carat-r">
+							<img src="images/main/food/0.jpg" class="ui-li-thumb">
+							<h2>Food</h2>
+							<p class="numLikes">Likes 6</p>
+							<p class="ui-li-aside">food</p>
+						</a></li>
+						<!--<li data-item="shopping" class="ui-li-has-thumb"><a href="javascript:openMap('music');" class="ui-btn ui-btn-icon-right ui-icon-carat-r">
+							<img src="img/pane/las_vegas.jpg" class="ui-li-thumb">
+							<h2>Shopping</h2>
+							<p class="numLikes">Likes 6</p>
+							<p class="ui-li-aside">shopping</p>
+						</a></li>-->
+					</ul>
+
+				</div>
+
+			</div>
+
+
+
+			<div class="ui-loader ui-corner-all ui-body-a ui-loader-default"><span class="ui-icon-loading"></span><h1>loading</h1></div>
+					
+
+		</div>
+		
+        <!-- description page-->
+        <div data-role="page" id="description-page">
+        <div id="home" class="banner-text wow fadeInUp" data-wow-delay="0.5s" style="position:absolute;top:10%;left:0;right:0;z-index:1;">
+        <h1>A visit to <span>Title</span> In <label>Bangalore</label></h1>
+        <h2>Description about the event</h2>
+        </div>
+        <div class="banner">
+        </div>
+        <div id="brief" class="brief">
+        <div class="container">
+        <div class="col-md-6 brief-grids wow fadeInLeft" data-wow-delay="0.5s">
+        <img class="img1" alt=""/>
+        <div class="brief-grid">
+        <div class="brief-grid-text">
+							 <h3>Description</h3>
+                             <p>This event is awesome. Here it has the follwing features..</p>
+                             </div>
+                             <div class="brief-grid-content1">
+                             <h3>Entertainment</h3>
+                             <p>Lorem lean startup ipsum product market fit customer development
+                             acquihire technical cofounder.</p>
+                             </div>
+                             <div class="brief-grid-content2">
+                             <h3>Style and Fashion</h3>
+                             <p>Lorem lean startup ipsum product market fit customer development
+                             acquihire technical cofounder.</p>
+                             </div>
+                             </div>
+                             </div>
+                             <div class="col-md-6 brief-grids wow fadeInRight" data-wow-delay="0.5s">
+                             <img src="images/browse2.jpg" alt=""/>
+                             <div class="brief-grid">
+                             <div class="brief-grid-text">
+                             <h3>Want to Book this event? Dont worry you can do it right here...</h3>
+                             <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+                             quis nostrud exercitation ullamco laboris nisi ut.</p>
+                             </div>
+                             <div class="brief-grid-content1 good">
+                             <h3>User Reviews</h3>
+                             <p>User 1: A must visit event</p>
+                             <p>User 2: I had a great time there.</p>
+                             </div>
+                             <div style="text-align: center;">
+                                <button type="button" class="btn btn-primary btn-lg">BOOK NOW</button>
+                             </div>
+                             
+                             </div>
+                             </div>
+                             <div class="clearfix"> </div>		 
+                             </div>
+                             </div>
+                             
+                             <div class="footer">
+                             <div class="container">
+                             <div class="ftr-logo">
+                             <a class="wow bounceIn" data-wow-delay="0.5s" href="index.html"><h1><span>Tinder For Travel</span></h1></a>
+                             </div>
+                             <div class="copy-right wow bounceInUp" data-wow-delay="0.5s">
+                             <p>Copyright &#169; 2015 Tinder For Travel . All Rights Reserved.</p>
+                             </div>
+                             
+                             </div>
+                             </div>
+                             </div>
+                             
+                             <!-- description page ends-->
+
+		
+		
+		
+        <script type="text/javascript" src="js/jquery.transform2d.js"></script>
+        <script type="text/javascript" src="js/jquery.vTiwari.js"></script>
+        <script type="text/javascript" src="js/main.js"></script>
+		
+		
+		
+		
+    </body>
+</html>
