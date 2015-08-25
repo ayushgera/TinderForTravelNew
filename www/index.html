@@ -20,14 +20,9 @@
                 <link href='http://fonts.googleapis.com/css?family=Source+Sans+Pro:200,300,400,600,700,900' rel='stylesheet' type='text/css'>
                     <link href='http://fonts.googleapis.com/css?family=Raleway:400,800,300,100,500,700,600,900' rel='stylesheet' type='text/css'>
                     <link href="css/animate.css" rel="stylesheet" type="text/css" media="all">
-
-                    
                     <!--/animated-css-->
                     <!--for desc end-->
 				<link rel="stylesheet" type="text/css" href="css/vTiwari.css">
-				
-				<!-- bxSlider CSS file -->
-				<!--<link href="jquery.bxslider.css" rel="stylesheet" />-->
 				
 				<style type="text/css">
 
@@ -111,7 +106,7 @@
    
         
 		<!--<div id="geolocation" style="display:block;height:40%"></div>-->
-		<div data-role="page" id="map-canvas" style="display:block;"></div> 
+		<div data-role="page" id="map-canvas" ></div> 
 
 		<!--<ul class="bxslider" style="display:block;margin-bottom:0.1%;">
 		  <li><img class="slider-image" src="images/Chicago.jpg" /></li>
@@ -120,15 +115,6 @@
 		  <li><img class="slider-image" src="images/NewYork.jpg" /></li>
 		   <li><img class="slider-image" src="images/San_Francisco.jpg" /></li>
 		</ul>-->
-		
-		
-		
-		<!-- Element to pop up -->
-         <!-- Element to pop up -->
-			<div id="element_to_pop_up">
-				<a class="b-close">x<a/>
-				<div class="content" style="max-width:320px;max-height:400px;"></div>
-			</div>
 		
 		<!--<script type="text/javascript" src="js/jquery.min.js"></script>-->
 		
@@ -191,7 +177,7 @@
         <!-- description page-->
         <div data-role="page" id="description-page">
         <div id="home" class="banner-text wow fadeInUp" data-wow-delay="0.5s" style="position:absolute;top:10%;left:0;right:0;z-index:1;">
-        <h1>A visit to <span>Title</span> In <label>Bangalore</label></h1>
+        <h1>A visit to <span></span> In <label>Bangalore</label></h1>
         <h2>Description about the event</h2>
         </div>
         <div class="banner">
@@ -256,13 +242,6 @@
                              <!-- description page ends-->
 
 		<script type="text/javascript" src="cordova.js"></script>
-		
-		
-		
-		
-		
-		
-		
 		<script src="js/wow.min.js"></script>
 		<script type="text/javascript" src="js/jquery-1.11.3.min.js"></script>
 		<script type="text/javascript" src="js/jquery.bpopup.min.js"></script>
@@ -277,14 +256,11 @@
         <script type="text/javascript" src="js/main.js"></script>
 		
 		<script>
-				//document.addEventListener("deviceready", onDeviceReady, false);
+				document.addEventListener("deviceready", onDeviceReady, false);
 				
-				//function onDeviceReady(){
-									initialiseApp();
-				
-				
-				
-				//}
+				function onDeviceReady(){
+					initialiseApp();
+				}
 
                    
 				</script>

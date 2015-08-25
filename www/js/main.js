@@ -58,6 +58,7 @@ var imagesArr = [{"id":"adventure0","category":"adventure","event":"","like":"0"
 var currentImage= imagesArr.length-1;
 					
 function initialiseApp(){
+
             	$("#map-canvas").hide();
 				$("#likesPage").hide();
 				$("#description-page").hide();
