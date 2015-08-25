@@ -140,7 +140,7 @@ function onSuccess() {
 	//48.8584831,2.3502476
 	//48.8584831,2.3502476
 	//48.8582, 2.2945
-
+	new WOW().init();
 	var lat=48.8582;//position.coords.latitude;
 	var lang=2.2945;//position.coords.longitude;
 	var myLatlng = new google.maps.LatLng(lat,lang);
